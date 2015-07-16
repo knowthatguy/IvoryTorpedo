@@ -1,0 +1,47 @@
+{% extends "basis.html" %}
+{% block title %}Graph{% endblock %}
+
+{% block content %}
+                <section>
+                    <header><h3>Image</h3></header>
+                    <div id="chart" class="chart"></div>
+                </section>
+                <hr />
+
+                <section>
+                    <header>
+                        <h3>Description</h3>
+                        <p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
+                    </header>
+                        <p>R - circle radius</p>
+                        <p>H - depth circle center under free fluid surface</p>
+                        <p>x - frequency parameter x = sigma^2*l/g, l=sqrt(H*H-R*R)</p>
+                        <p>Bj - define nondimensional amplinude of exciting fofces 
+                        (sum of Krylov's and diffraction parts) applied to circle
+                        contour due to progressive waves</p>
+                        <p>lmb - Nondimensional circle contour demping lambda-coefficient </p>
+                        <p>n - frequency parameter n = sigma^2*l/g, l=sqrt(H*H-R*R)</p>
+
+                </section>       
+
+    <script>
+        $(function() {
+            
+            $('#chart').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: "Forces"
+                },
+                tooltip: {
+                    shared: true,
+                    crosshairs: true
+                },
+                series: {{ fb|tojson|safe }}
+            });
+
+
+        });
+    </script>
+{% endblock %}

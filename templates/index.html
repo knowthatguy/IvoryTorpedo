@@ -1,0 +1,29 @@
+{% extends "basis.html" %}
+{% block title %}Index{% endblock %}
+
+{% block content %}
+                <section>
+                    <h3>Form</h3>
+                    <p>R < 1 < H</p>
+
+                    <form role="form" action="{{ url_for('charts') }}" method="POST">
+                        <div class="row uniform 100%">
+                            <div class="6u 12u$(xsmall)">
+                                <input type="text" name="R" id="R" value="" placeholder="R" />
+                            </div>
+
+                            <div class="6u$ 12u$(xsmall)">
+                                <input type="text" name="H" id="H" value="" placeholder="H" />
+                            </div>
+
+                            <div class="12u$">
+                                <ul class="actions">
+                                <li><input type="submit" value="Send" class="special" /></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </section>
+{% endblock %}
