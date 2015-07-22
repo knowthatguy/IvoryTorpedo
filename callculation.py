@@ -105,7 +105,7 @@ class HFrm(object):
         t = r/(1.+sqrt(1.-r*r))
         if t < eps : t = eps
         t0 =-log(t)
-        N = 100#int(round(log(1./sqrt(eps)+sqrt(1.+1./eps))/t0))+1  
+        N = int(round(log(1./sqrt(eps)+sqrt(1.+1./eps))/t0))+1  
         b = 0.
         em = sg = 1.
         for i in range(1,N):

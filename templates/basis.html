@@ -14,35 +14,26 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="description" content="" />
         <meta name="keywords" content="" />
-        <!--[if lte IE 8]><script src="{{ url_for('static', filename='css/ie/html5shiv.js') }}"></script><![endif]-->
+
         <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/jquery.dropotron.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/skel-layers.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/init.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/util.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
         <script src="http://code.highcharts.com/highcharts.js"></script>
 
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/skel.css') }}" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style-xlarge.css') }}" />
-    
-        <!--[if lte IE 9]><link rel="stylesheet" href="{{ url_for('static', filename='css/ie/v9.css') }}" /><![endif]-->
-        <!--[if lte IE 8]><link rel="stylesheet" href="{{ url_for('static', filename='css/ie/v8.css') }}" /><![endif]-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+        <!--[if lte IE 8]><script src="js/ie/html5shiv.js"></script><![endif]-->
+        <!--[if lte IE 8]><link rel="stylesheet" href="css/ie8.css" /><![endif]-->
+        <!--[if lte IE 9]><link rel="stylesheet" href="css/ie9.css" /><![endif]-->
+
+
     </head>
     <body>
 
         <!-- Header -->
         <header id="header" class="skel-layers-fixed">
             <h1 id="logo"><a href="/">IvoryTorpedo</a></h1>
-            <nav id="nav">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="https://github.com/onovosadovskyi/IvoryTorpedo" class="icon fa-github"><span class="label">Github</span></a></li>
-                </ul>
-            </nav>
         </header>
 
         <!-- Main -->
@@ -55,10 +46,17 @@
         
         <!-- Footer -->
         <footer id="footer">
+            <ul class="icons">
+                    <li><a href="https://github.com/onovosadovskyi/IvoryTorpedo" class="icon alt fa-github"><span class="label">GitHub</span></a></li>
+                    <li><a href="mailto:o.novosadovskyi@gmail.com" class="icon alt fa-envelope"><span class="label">Email</span></a></li>
+            </ul>
             <ul class="copyright">
+
                 <li>&copy; O.Novosadovskyi. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
             </ul>
         </footer>
+
+
             
     </body>
 </html>
