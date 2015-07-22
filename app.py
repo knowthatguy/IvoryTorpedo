@@ -7,8 +7,8 @@ app = Flask(__name__, static_url_path='/static')
 def charts():
     print request.form.get("R")
     r,h = map(float, (request.form.get("R"), request.form.get("H")))
-    graph = Tb_B(r,h)
-    return render_template("graph.html", fb = graph)
+    g = graphs.HGraph()
+    return render_template("graph.html", fb = g.spline(r,h))
 
 @app.route("/")
 def main_form_post():

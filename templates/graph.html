@@ -4,7 +4,7 @@
 {% block content %}
                 <section>
                     <header><h3>Image</h3></header>
-                    <div id="chart" class="chart"></div>
+                    <div id="chart" class="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
                 </section>
                 <hr />
 
@@ -29,7 +29,8 @@
             
             $('#chart').highcharts({
                 chart: {
-                    type: 'spline'
+                    type: 'spline',
+                    zoomType: 'x'
                 },
                 title: {
                     text: "Forces"
@@ -37,6 +38,20 @@
                 tooltip: {
                     shared: true,
                     crosshairs: true
+                },
+                plotOptions: {
+                    area:{
+                        marker: {
+                            radius: 2
+                        },
+                        lineWidth: 1,
+                        states: {
+                            hover: {
+                                lineWidth: 1
+                            }
+                        },
+                        threshold: null
+                    }
                 },
                 series: {{ fb|tojson|safe }}
             });
