@@ -35,6 +35,9 @@ def load_modules(options):
     if options.test_math:
         from callculation.tests import test_frame
         modules.append(test_frame)
+    if options.test_flask:
+        from tests import test_app
+        modules.append(test_app)
     return modules
 
 

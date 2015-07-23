@@ -3,6 +3,7 @@ import math
 from numpy import *
 
 g = 9.81
+eps=1.e-6
 
 class HFrm(object):
     '''
@@ -10,12 +11,21 @@ class HFrm(object):
     calculated; parameters are:
     R,m - frame radius
     H,m - underwater depth of frame center
-    sgm,1/sec - circular friequancy'''
+    sgm,1/sec - circular friequancy
+    '''
         
     def __init__(self,R,H,sgm):
         self.__R = R
         self.__H = H
         self.__sgm = sgm
+
+        self.r = self.__R/self.__H
+        if self.r < eps: self.r = eps
+        self.l = self.__H*sqrt(1.-self.r*self.r)
+        self.n = self.__sgm**2*self.l/g
+        self.t = self.r / (1.+sqrt(1.-self.r * self.r))
+        self.t0 = -log(self.t)
+        self.en = eps*exp(self.n)
 
     @staticmethod
     def rmb(f,a,b,tol=1.0e-6):
@@ -45,7 +55,7 @@ class HFrm(object):
                     Inew = (Iold + h*sum)/2.0
             return Inew
 
-        def richardson(r,k):  # function definiting in body of another function
+        def richardson(r,k):
             for j in range(k-1,0,-1):
                 const = 4.0**(k-j)
                 r[j] = (const*r[j+1] - r[j])/(const - 1.0)
@@ -62,54 +72,44 @@ class HFrm(object):
             r_old = r[1]
         print "Romberg quadrature did not converge"
 
-        # End of function rmb(f,a,b,tol=1.0e-6)
-
     @property
     def fB(self):
-        eps = 1.e-6
-        r = self.__R/self.__H
-        l = self.__H*sqrt(1.-r*r)
-        n = self.__sgm**2*l/g
-        if n == 0.: return 0.
-        t = r/(1.+sqrt(1.-r*r))
-        t0 =-log(t)
-        en = eps*exp(n)
-        #FIXME:
-        N = int(log(1./sqrt(en) + sqrt(1.+1./en))/t0)+1
-        #
-        b=0.
+        '''
+        Function to calculate Bj - const
+        '''
+        if self.n == 0.: return 0.
+        
+        N = int(log(1./sqrt(self.en) + sqrt(1.+1./self.en))/self.t0)+1
+        b = 0.
         em = sg = 1.
         for i in xrange(1,N):
-            em *= t
-            ep=1./em
-            s=.5*(ep-em)
-            c=.5*(ep+em)
-            s2=s*s
-            u = exp(-n*c/s)/s2*sg
+            em *= self.t
+            ep = 1./em
+            s = .5*(ep-em)
+            c = .5*(ep+em)
+            s2 = s*s
+            u = exp(-self.n*c/s)/s2*sg
             b += u
             sg =-sg
-        return pi*n*b
+        return pi*self.n*b
 
     @property
     def flmb(self):
-        r=self.__R/self.__H
-        l=self.__H*sqrt(1.-r*r)
-        n=self.__sgm**2*l/g
-        return sqrt(n)*self.fB**2    # fB()
+        '''
+        Function to calculate damping coefficients
+        '''
+        return sqrt(self.n)*self.fB**2
         
     @property
-    def f_minf(self):    # Function to calculate added mass coefs at infinite freq
-        eps = 1.e-6
-        r = self.__R/self.__H
-        if r < eps: r = eps
-        t = r/(1.+sqrt(1.-r*r))
-        if t < eps : t = eps
-        t0 =-log(t)
-        N = int(round(log(1./sqrt(eps)+sqrt(1.+1./eps))/t0))+1  
+    def fminf(self):
+        '''
+        Function to calculate added mass coefs at infinite freq
+        '''
+        N = int(round(log(1./sqrt(eps)+sqrt(1.+1./eps))/self.t0))+1  
         b = 0.
         em = sg = 1.
         for i in range(1,N):
-            em *= t
+            em *= self.t
             ep=1./em
             s=.5*(ep-em)
             s2=s*s
@@ -118,88 +118,86 @@ class HFrm(object):
             b += u
             sg=-sg
         M = pi*b
-        return M/pi*sinh(t0)**2    # new value fminf:   /pi*sinh(t0)**2
+        return M/pi*sinh(self.t0)**2
 
     def E1(self, x):
-            '''Integral exponential function on interval [x,inf)
-            with integrand exp(-t)/t'''
-            if 0<x<=1.:
-                return -.57721566-log(x)+((((.00107857*x-.00976004)* \
-                x+.05519968)*x-.24991055)*x+.99999193)*x
-            else:
-                return exp(-x)*((((x+8.5733287401)*x+18.059016973)*x+8.6347608925 \
-                )*x+.2677737343)/x/((((x+9.5733223454)*x+25.6329561486)*x+ \
-                21.0996530827)*x+3.9584969228)
+        '''
+        Integral exponential function on interval [x,inf)
+        with integrand exp(-t)/t
+        '''
+        if 0 < x <= 1.:
+            return -.57721566-log(x)+((((.00107857*x-.00976004)* \
+            x+.05519968)*x-.24991055)*x+.99999193)*x
+        else:
+            return exp(-x)*((((x+8.5733287401)*x+18.059016973)*x+8.6347608925 \
+            )*x+.2677737343)/x/((((x+9.5733223454)*x+25.6329561486)*x+ \
+            21.0996530827)*x+3.9584969228)
 
-    def f1(self, x):
-        if x == 0.: return 1.
-        return sinh(x)/x
+    def f1(self, a):
+        return math.sinh(a)/a if a > 0 else 1
 
     def F(self, x, c):
-        '''Function to calculate singular integral which integrand is
-        t^2*exp(-t*c)/(t-x) and 0<=t,n<inf'''
-        if x==0. : return 1./c**2
-        cx=c*x
+        '''
+        Function to calculate singular integral which integrand is
+        t^2*exp(-t*c)/(t-x) and 0<=t,n<inf
+        '''
+        if x == 0. : return 1./c**2
+        cx = c*x
         return (1./c+x)/c+x*x*exp(-cx)*(-2.*self.rmb(self.f1,0.,cx) + self.E1(cx))
     
     def vpI(self, r, n):
-            '''Function to calculate sigular integral when representing
-            added mass coefficient by using Krammers - Kronig relation'''
-            eps=1.e-6
-            t=r/(1.+sqrt(1.-r*r))   # t=exp(-t0)
-            t0=-log(t)
-            en=eps*exp(n)
-            N=int(log(1./sqrt(en)+sqrt(1.+1./en))/t0)+1
-            bi=0.
-            emi=1.
-            sgi=-1.
-            for i in range(1,N):
-                emi *= t
-                epi=1./emi
-                si=.5*(epi-emi)
-                ci=.5*(epi+emi)
-                cti=ci/si
-                s2i=si*si
-                bj=0.
-                sgj=-1.
-                emj=1.
-                for j in range(1,N):
-                    emj *= t
-                    epj=1./emj
-                    sj=.5*(epj-emj)
-                    cj=.5*(epj+emj)
-                    ctj=cj/sj
-                    s2j=sj*sj
-                    ctij=cti+ctj
-                    uj = self.F(n,ctij)/s2j*sgj
-                    bj += uj
-                    sgj=-sgj
-                bi += bj/s2i*sgi
-                sgi=-sgi
-            return pi*bi
+        '''
+        Function to calculate sigular integral when representing
+        added mass coefficient by using Krammers - Kronig relation
+        '''
+        N = int(log(1./sqrt(self.en)+sqrt(1.+1./self.en))/self.t0)+1
+        bi = 0.
+        emi = 1.
+        sgi = -1.
+        for i in range(1,N):
+            emi *= self.t
+            epi = 1./emi
+            si = .5*(epi-emi)
+            ci = .5*(epi+emi)
+            cti = ci/si
+            s2i = si*si
+            bj = 0.
+            sgj = -1.
+            emj = 1.
+            for j in range(1,N):
+                emj *= self.t
+                epj = 1./emj
+                sj = .5*(epj - emj)
+                cj = .5*(epj + emj)
+                ctj = cj/sj
+                s2j = sj*sj
+                ctij = cti+ctj
+                uj = self.F(self.n,ctij)/s2j*sgj
+                bj += uj
+                sgj=-sgj
+            bi += bj/s2i*sgi
+            sgi = -sgi
+        return pi*bi
 
     @property
-    def fmu(self):    # Function to calculate added mass coefs at finite freq
-        eps=1.e-6
-        r=self.__R/self.__H
-        l=self.__H*sqrt(1.-r*r)
-        n=self.__sgm**2*l/g
-        f2 = self.f_minf
-        return f2 + self.vpI(r,n)    # fminf()
-
-    # End of class HFrm
+    def fmu(self):
+        '''
+        Function to calculate added mass coefs at finite freq
+        '''
+        return self.fminf + self.vpI(self.r, self.n)
 
 
 class HBd(HFrm):
-    '''Class for apparatus body hydrodynamic coefficients to be
-        calculated; parameters are:
-        L,m - body length
-        R,m - max body radius
-        H,m - underwater depth of body frame centers
-        f - function to define body radii in longitudinal direction
-        sgm0,1/sec - incident waves circular friequancy
-        v,m/sec - body velocity
-        q,rad - angle between body velocity and incident waves velocity
+    '''
+    Class for apparatus body hydrodynamic coefficients to be
+    calculated; parameters are:
+    L,m - body length
+    R,m - max body radius
+    H,m - underwater depth of body frame centers
+    f - function to define body radii in longitudinal direction
+    sgm0,1/sec - incident waves circular friequancy
+    v,m/sec - body velocity
+    q,rad - angle between body velocity and incident waves velocity
     '''
 
     def __init__(self,L,R,f,H,sgm0,v=0.,q=0.):
@@ -210,20 +208,22 @@ class HBd(HFrm):
         self.__sgm0 = sgm0
         self.__v = v
         self.__q = q
-        #HFrm.__init__(R,H,sgm0)
 
-    def __fsgm(self):    # friequancy of encounter (due to body velocity)
-            
-            return self.__sgm0+self.__sgm0**2/g*self.__v*cos(self.__q)
+    def __fsgm(self):
+        '''
+        Friequency of encounter (due to body velocity) 
+        '''
+        return self.__sgm0 + self.__sgm0**2/g*self.__v*cos(self.__q)
 
-    def __fdlv(self):    # dimensionless velocity
-        s=self.__fsgm()
-        if s==0. : return .0
+    def __fdlv(self):
+        '''
+        Dimensionless velocity
+        '''
+        s = self.__fsgm()
+        if s == 0. : return .0
         return self.__v/s/self.__L
 
     def __fLmb(self,x):
-        #if -.5<x or x>.5: Error
-        eps=1.e-6   
         s=self.__fsgm()
         r=self.__R/self.__H*self.__f(x)
         if r<eps: r=eps
@@ -231,15 +231,13 @@ class HBd(HFrm):
         return C.flmb
 
     def __fMu(self,x):
-        #if -.5<x or x>.5: Error
-        eps=1.e-6
         s=self.__fsgm()
         r=self.__R/self.__H*self.__f(x)
         if r<eps: r=eps
         C=HFrm(r,1.,s)
         return C.fmu
 
-    # Calculation of added mass and damping coefficiebts
+    # Calculation of added mass and dumping coefficiebts
 
     @property
     def fLmb0(self):
@@ -414,9 +412,6 @@ class HBd(HFrm):
     # Calculation of excited forces
 
     def __fBc(self,x):
-        #if -.5<x or x>.5: Error
-        
-        eps=1.e-6
         s0=self.__sgm0 
         s1=s0*sqrt(abs(sin(self.__q)))
         r=self.__R/self.__H*self.__f(x)
@@ -436,9 +431,6 @@ class HBd(HFrm):
         return C.fB*sin(k*x)
 
     def __fBxc(self,x):
-        #if -.5<x or x>.5: Error
-        
-        eps=1.e-6
         s0=self.__sgm0 
         s1=s0*sqrt(abs(sin(self.__q)))
         r=self.__R/self.__H*self.__f(x)
@@ -448,9 +440,6 @@ class HBd(HFrm):
         return C.fB*x*cos(k*x)
 
     def __fBxs(self,x):
-        #if -.5<x or x>.5: Error
-        
-        eps=1.e-6
         s0=self.__sgm0 
         s1=s0*sqrt(abs(sin(self.__q)))
         r=self.__R/self.__H*self.__f(x)

@@ -14,11 +14,11 @@ class HGraph(object):
         x - frequency parameter x = sigma^2*l/g, l=sqrt(H*H-R*R)
 
 
-        Bj - define nondimensional amplinude of exciting fofces
+        Bj - define nondimensional amplinude of exciting forces
         (sum of Krylov's and diffraction parts) applied to circle
         contour due to progressive waves
         '''
-        lr = [.1,.2,.3,.4,.5,.6,.7,.8,.9,.95] # for testing
+        # lr = [.1,.2,.3,.4,.5,.6,.7,.8,.9,.95] # for testing
         dx = .05
         x = -dx
         x_l = []

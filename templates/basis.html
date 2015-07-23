@@ -11,9 +11,8 @@
         {% else %}
         <title>IvoryTorpedo</title>
         {% endif %}
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="description" content="" />
-        <meta name="keywords" content="" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
@@ -23,9 +22,9 @@
         <script src="http://code.highcharts.com/highcharts.js"></script>
 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
-        <!--[if lte IE 8]><script src="js/ie/html5shiv.js"></script><![endif]-->
-        <!--[if lte IE 8]><link rel="stylesheet" href="css/ie8.css" /><![endif]-->
-        <!--[if lte IE 9]><link rel="stylesheet" href="css/ie9.css" /><![endif]-->
+        <!--[if lte IE 8]><script src="{{ url_for('static', filename='js/ie/html5shiv.js') }}"></script><![endif]-->
+        <!--[if lte IE 8]><link rel="stylesheet" href="{{ url_for('static', filename='css/ie8.css') }}" /><![endif]-->
+        <!--[if lte IE 9]><link rel="stylesheet" href="{{ url_for('static', filename='css/ie9.css') }}" /><![endif]-->
 
 
     </head>
@@ -34,6 +33,7 @@
         <!-- Header -->
         <header id="header" class="skel-layers-fixed">
             <h1 id="logo"><a href="/">IvoryTorpedo</a></h1>
+            <h3>Cloud based app for callculation of hydrodynamic coefficients of unmanned underwater apparatus</h3>
         </header>
 
         <!-- Main -->

@@ -3,27 +3,62 @@
 
 {% block content %}
                 <section>
-                    <h3>Form</h3>
-                    <p>R < 1 < H</p>
+                    <p>By using of well-known Haskind's and Kramers-Kronig's relationships the simple and effective technique is developed for the oscillatory motion hydrodynamic characteristics of the underwater apparatus frame (a circle of given radius) to be calculated as a function of circular frequency (0,N). The characteristics mentioned for the apparatus having/not having forward velocity are defined by strip-theory method.</p>
+                </section>
+                <hr />
+                
+                <section>
+                    <h1>Try me</h1>
+                    <h3>Input data:</h3>
+                    <p><b>R,m</b> - frame radius</p>
+                    <p><b>H,m</b> - underwater depth of frame center</p>
+                    <p><b>Note:</b> Mentioned radius should be less than depth and 1.</p>
 
-                    <form role="form" action="{{ url_for('charts') }}" method="POST">
+                    <form role="form" name="input_form" action="{{ url_for('charts') }}" method="POST"  accept-charset="UTF-8"
+autocomplete="off">
                         <div class="row uniform 100%">
                             <div class="6u 12u$(xsmall)">
-                                <input type="text" name="R" id="R" value="" placeholder="R" />
+                                <input type="text" name="R" id="R" value="" placeholder="R" required pattern="[0-9\.]+$" x-moz-errormessage="Enter radius in valid format" size="5" maxlength="5" oninput="OnInput (event)" onpropertychange="OnPropChanged (event)"/>
                             </div>
+                            
 
                             <div class="6u$ 12u$(xsmall)">
-                                <input type="text" name="H" id="H" value="" placeholder="H" />
+                                <input type="text" name="H" id="H" value="" placeholder="H" required pattern="[0-9\.]+$" x-moz-errormessage="Enter depth in valid format" size="5" maxlength="5"/>
                             </div>
+
+                            <div class="6u$ 12u$(xsmall)" id="errfn">   </div>
 
                             <div class="12u$">
                                 <ul class="actions">
-                                <li><input type="submit" value="Send" class="special" /></li>
+                                <li><input type="submit" value="Callculate" class="special big" /></li>
                                 </ul>
                             </div>
                         </div>
 
+
                     </form>
 
+
                 </section>
+
+                <script>
+                // Firefox, Google Chrome, Opera, Safari, Internet Explorer from version 9
+                function OnInput (event) {
+                    if (parseFloat(event.target.value) >= 1){
+                        document.getElementById('errfn').innerHTML="Radius should be less than 1";
+                    }
+                    else {
+                        document.getElementById('errfn').innerHTML="";
+                    }
+                }
+                // Internet Explorer
+                function OnPropChanged (event) {
+                    if (parseFloat(event.target.value) >= 1){
+                        document.getElementById('errfn').innerHTML="Radius should be less than 1";
+                    }
+                    else {
+                        document.getElementById('errfn').innerHTML="";
+                    }
+                }
+                </script>               
 {% endblock %}

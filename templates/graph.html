@@ -3,25 +3,30 @@
 
 {% block content %}
                 <section>
-                    <header><h3>Image</h3></header>
-                    <div id="chart" class="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                    <header><h3>Chart</h3></header>
+                        <div id="chart" class="chart" style="min-width: 310px; height: 600px; margin: 0 auto"></div>
+                    <ul class="actions">
+                        <li><a href="#one" class="button special small" onclick="showHideDiv()">Show Description</a></li>
+                        <li><a href="/" class="button special small">Back</a></li>
+                    </ul>
                 </section>
                 <hr />
 
-                <section>
+                <section id="one" style="visibility:hidden">
                     <header>
                         <h3>Description</h3>
-                        <p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
+                        <p>Unmanned underwater apparatus frame hydrodynamic coefficients</p>
                     </header>
-                        <p>R - circle radius</p>
-                        <p>H - depth circle center under free fluid surface</p>
-                        <p>x - frequency parameter x = sigma^2*l/g, l=sqrt(H*H-R*R)</p>
-                        <p>Bj - define nondimensional amplinude of exciting fofces 
-                        (sum of Krylov's and diffraction parts) applied to circle
-                        contour due to progressive waves</p>
-                        <p>lmb - Nondimensional circle contour demping lambda-coefficient </p>
-                        <p>n - frequency parameter n = sigma^2*l/g, l=sqrt(H*H-R*R)</p>
-
+                        <ul class="alt">
+                            <li>R - circle radius</li>
+                            <li>H - depth circle center under free fluid surface</li>
+                            <li>x - frequency parameter x = sigma^2*l/g, l=sqrt(H*H-R*R)</li>
+                            <li>Bj - define nondimensional amplinude of exciting fofces 
+                            (sum of Krylov's and diffraction parts) applied to circle
+                            contour due to progressive waves</li>
+                            <li>lmb - Nondimensional circle contour damping lambda-coefficient </li>
+                            <li>n - frequency parameter n = sigma^2*l/g, l=sqrt(H*H-R*R)</li>
+                        </ul>
                 </section>       
 
     <script>
@@ -38,6 +43,16 @@
                 tooltip: {
                     shared: true,
                     crosshairs: true
+                },
+                xAxis: {
+                    title: {
+                        text: 'Frequency'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Values'
+                    }
                 },
                 plotOptions: {
                     area:{
@@ -58,5 +73,15 @@
 
 
         });
+        function showHideDiv() { 
+            var divstyle = new String(); 
+            divstyle = document.getElementById("one").style.visibility; 
+            if (divstyle.toLowerCase() == "visible" || divstyle == "") { 
+                document.getElementById("one").style.visibility = "hidden"; 
+            } 
+            else { 
+                document.getElementById("one").style.visibility = "visible"; 
+            } 
+        } 
     </script>
 {% endblock %}
