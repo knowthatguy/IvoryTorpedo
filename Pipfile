@@ -9,7 +9,6 @@ responses = "*"
 
 [packages]
 Flask = "*"
-dev = "*"
 
 [requires]
 python_version = "3.8"
