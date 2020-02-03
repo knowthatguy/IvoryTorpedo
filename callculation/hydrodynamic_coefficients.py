@@ -53,7 +53,7 @@ class HFrm(object):
                 h = (b - a) / n  # Spacing of new points
                 x = a + h / 2.0
                 sum = 0.0
-                for i in range(n):
+                for _ in range(n):
                     sum = sum + f(x)
                     x = x + h
                     Inew = (Iold + h * sum) / 2.0
@@ -87,7 +87,7 @@ class HFrm(object):
         N = int(log(1.0 / sqrt(self.en) + sqrt(1.0 + 1.0 / self.en)) / self.t0) + 1
         b = 0.0
         em = sg = 1.0
-        for i in xrange(1, N):
+        for _ in range(1, N):
             em *= self.t
             ep = 1.0 / em
             s = 0.5 * (ep - em)
@@ -180,7 +180,7 @@ class HFrm(object):
         bi = 0.0
         emi = 1.0
         sgi = -1.0
-        for i in range(1, N):
+        for _ in range(1, N):
             emi *= self.t
             epi = 1.0 / emi
             si = 0.5 * (epi - emi)
@@ -190,7 +190,7 @@ class HFrm(object):
             bj = 0.0
             sgj = -1.0
             emj = 1.0
-            for j in range(1, N):
+            for _ in range(1, N):
                 emj *= self.t
                 epj = 1.0 / emj
                 sj = 0.5 * (epj - emj)
@@ -348,7 +348,7 @@ class HBd(HFrm):
 
     @property
     def fm55(self):  # Apparatus added mass coefficient (m55)
-        return self.fMu2 + v * v * self.fMu0
+        return self.fMu2 + self.__v * self.__v * self.fMu0
 
     @property
     def fl66(self):  # Apparatus damping coefficient (l66)
