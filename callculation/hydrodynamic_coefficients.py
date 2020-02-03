@@ -74,7 +74,7 @@ class HFrm(object):
             if abs(r[1] - r_old) < tol * max(abs(r[1]), 1.0):
                 return r[1]
             r_old = r[1]
-        print "Romberg quadrature did not converge"
+        print("Romberg quadrature did not converge")
 
     @property
     def fB(self):

@@ -424,20 +424,17 @@ class HGraph(object):
             if zmx < z[i, j]:
                 zmx = z[i, j]
 
-        fo = open(outfile, "w")
+        with open(outfile, "w") as fo:
 
-        print >> fo, "DSAA"  # info for .grd - file
-        print >> fo, "%d   %d" % (ny, nx)  # quantity of points ny, nx
-        print >> fo, "%.6f   %.6f" % (qmn, qmx)  # ymin, ymax
-        print >> fo, "%.6f   %.6f" % (dx, xb)  # xmin, xmax
-        print >> fo, "%.6f   %.6f" % (zmn, zmx)  # zmin, zmax
-        print >> fo
-        for i in range(0, nx):
-            for j in range(0, ny):
-                print >> fo, "%12.6f " % z[i, j],
-        print >> fo
+            fo.write("DSAA\n")  # info for .grd - file
+            fo.write("%d   %d\n" % (ny, nx))  # quantity of points ny, nx
+            fo.write("%.6f   %.6f\n" % (qmn, qmx))  # ymin, ymax
+            fo.write("%.6f   %.6f\n" % (dx, xb))  # xmin, xmax
+            fo.write("%.6f   %.6f\n" % (zmn, zmx))  # zmin, zmax
 
-        fo.close()
+            for i in range(0, nx):
+                for j in range(0, ny):
+                    fo.write("%12.6f \n" % z[i, j])
 
         # End of function SrfSgm1(sdtDct)
 

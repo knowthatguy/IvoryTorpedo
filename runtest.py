@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     suite = unittest.TestSuite()
     for module in load_modules(options):
-        print 'Adding tests for "%s"' % module.__name__
+        print('Adding tests for "%s"' % module.__name__)
         module_suite = unittest.TestLoader().loadTestsFromModule(module)
         suite.addTest(module_suite)
 
